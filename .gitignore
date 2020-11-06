@@ -11,3 +11,5 @@ tmp
 database/*.sqlite
 
 yarn.lock
+
+package-lock.json
