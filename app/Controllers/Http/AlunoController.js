@@ -31,7 +31,7 @@ class AlunoController {
    * @param {Response} ctx.response
    */
   async store({ request, auth }) {
-    const data = request.only(["curso_id", "descricao", "descricao"]);
+    const data = request.only(["curso_id", "nome", "descricao"]);
     console.log(auth.user.id);
     const aluno = await Aluno.create(data);
     return aluno;
@@ -47,7 +47,9 @@ class AlunoController {
    * @param {View} ctx.view
    */
   async show({ params, request, response, view }) {
-    const aluno = await Aluno.findOrFail(params.id);
+    // const aluno = await Aluno.findOrFail(params.id);
+    // return aluno;
+    const aluno = await Aluno.query().where("curso_id", params.id).fetch();
     return aluno;
   }
 
