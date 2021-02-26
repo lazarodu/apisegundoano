@@ -9,9 +9,14 @@ class AuthController {
     return user;
   }
   async authenticate({ request, auth }) {
-    const { email, password } = request.all();
-    const token = await auth.attempt(email, password);
-    return token;
+    try {
+      const { email, password } = request.all();
+      const { token } = await auth.attempt(email, password);
+      const user = await User.findBy({ email });
+      return { token, user };
+    } catch (error) {
+      return error;
+    }
   }
 }
 
