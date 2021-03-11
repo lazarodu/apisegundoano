@@ -24,11 +24,18 @@ Route.post("/register", "AuthController.register");
 Route.post("/authenticate", "AuthController.authenticate");
 
 Route.get("/cursos", "CursoController.index");
-Route.get("/alunos/:id", "AlunoController.show");
+Route.get("/alunos/:id/cursos", "AlunoController.cursos");
+// Route.get("/alunos/:id", "AlunoController.show");
 Route.group(() => {
-  // Route.resource("alunos", "AlunoController").apiOnly();
-  Route.resource("alunos", "AlunoController").only([
-    "index",
+  Route.resource("alunos", "AlunoController").apiOnly();
+  // Route.resource("alunos", "AlunoController").only([
+  //   "index",
+  //   "store",
+  //   "update",
+  //   "destroy",
+  // ]);
+  Route.resource("cursos", "CursoController").only([
+    "show",
     "store",
     "update",
     "destroy",

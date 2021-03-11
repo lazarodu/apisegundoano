@@ -30,11 +30,15 @@ class AlunoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, auth }) {
-    const data = request.only(["curso_id", "nome", "descricao"]);
-    console.log(auth.user.id);
-    const aluno = await Aluno.create(data);
-    return aluno;
+  async store({ request, response }) {
+    try {
+      const data = request.only(["curso_id", "nome", "descricao"]);
+      // console.log(auth.user.id);
+      const aluno = await Aluno.create(data);
+      return aluno;
+    } catch (error) {
+      response.status(500).send("Erro ao inserir aluno!");
+    }
   }
 
   /**
@@ -47,6 +51,22 @@ class AlunoController {
    * @param {View} ctx.view
    */
   async show({ params, request, response, view }) {
+    const aluno = await Aluno.findOrFail(params.id);
+    return aluno;
+    // const aluno = await Aluno.query().where("curso_id", params.id).fetch();
+    // return aluno;
+  }
+
+  /**
+   * Display alunos of cursos.
+   * GET alunos/:id/cursos
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async cursos({ params, request, response, view }) {
     // const aluno = await Aluno.findOrFail(params.id);
     // return aluno;
     const aluno = await Aluno.query().where("curso_id", params.id).fetch();
@@ -62,17 +82,21 @@ class AlunoController {
    * @param {Response} ctx.response
    */
   async update({ params, request, response }) {
-    const aluno = await Aluno.findOrFail(params.id);
-    const { nome, curso_id, descricao } = request.only([
-      "nome",
-      "curso_id",
-      "descricao",
-    ]);
-    aluno.nome = nome;
-    aluno.curso_id = curso_id;
-    aluno.descricao = descricao;
-    await aluno.save();
-    return aluno;
+    try {
+      const aluno = await Aluno.findOrFail(params.id);
+      const { nome, curso_id, descricao } = request.only([
+        "nome",
+        "curso_id",
+        "descricao",
+      ]);
+      aluno.nome = nome;
+      aluno.curso_id = curso_id;
+      aluno.descricao = descricao;
+      await aluno.save();
+      return aluno;
+    } catch (error) {
+      response.status(500).send("Erro ao atualizar o aluno!");
+    }
   }
 
   /**
@@ -84,9 +108,13 @@ class AlunoController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request, response }) {
-    const aluno = await Aluno.findOrFail(params.id);
-    await aluno.delete();
-    return aluno;
+    try {
+      const aluno = await Aluno.findOrFail(params.id);
+      await aluno.delete();
+      return aluno;
+    } catch (error) {
+      response.status(500).send("Erro ao apagar o aluno!");
+    }
   }
 }
 
